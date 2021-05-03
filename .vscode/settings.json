@@ -1,0 +1,8 @@
+{
+  "editor.tabSize": 2,
+  "css.lint.unknownAtRules": "ignore",
+  "eslint.format.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}

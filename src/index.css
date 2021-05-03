@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  button {
+    @apply w-max rounded-full px-2 py-1 border border-black;
+  }
+
+  input {
+    @apply border-b border-black
+  }
+
+  form {
+    @apply w-6/12
+  }
+}
