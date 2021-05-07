@@ -23,6 +23,7 @@
     "rules": {
         "semi": "warn",
         "quotes": ["warn", "single"],
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "no-debugger": "warn"
     }
 }

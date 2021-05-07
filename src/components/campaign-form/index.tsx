@@ -19,6 +19,8 @@ export default function CampaignForm(): JSX.Element {
       title,
       players: Object.values(players)
     });
+
+    fetch('/players', { method: 'POST', body: JSON.stringify(players) });
   };
   const onAddPlayer = () => {
     setNumberOfPlayers(numberOfPlayers+1);
