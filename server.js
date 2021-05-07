@@ -15,7 +15,7 @@
 
 // init project
 var express = require('express');
-// const port = 5000;
+const port = 5000;
 // setup a new database
 // persisted using async file storage
 // Security note: the database is saved to the file `db.json` on the local filesystem.
@@ -25,6 +25,8 @@ var FileSync = require('lowdb/adapters/FileSync')
 var adapter = new FileSync('.data/db.json')
 var db = low(adapter)
 var app = express();
+
+app.use(express.json())
 
 // default players list
 db.defaults({ players: [] }).write();
@@ -49,7 +51,7 @@ app.get('/players', function (request, response) {
 // creates a new entry in the players collection with the submitted values
 app.post('/players', function (request, response) {
   db.get('players')
-    .push({ name: request.query.name, pos: { x: request.query.pos.x, y: request.query.pos.y } })
+    .push(...(request.body || []))
     .write();
   console.log('New user inserted in the database');
   response.sendStatus(200);
@@ -84,6 +86,6 @@ app.get('/clear', function (request, response) {
 });
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+var listener = app.listen(port, function () {
+  console.log('Your app is listening on port ' + port);
 });
