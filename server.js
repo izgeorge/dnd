@@ -26,7 +26,7 @@ app.use(express.json())
 app.use(cors())
 
 // default players list
-db.defaults({ players: [] }).write();
+db.defaults({ players: {} }).write();
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));

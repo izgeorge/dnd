@@ -27,9 +27,11 @@ export default function CampaignForm(): JSX.Element {
     const { title, ...players } = data;
     const playerData = Object.values(players);
     let formattedPlayerData = {};
+
     playerData.forEach(name => {
       const id = uuidv4();
       formattedPlayerData = {
+        ...formattedPlayerData,
         [id]: {
           id,
           name,
@@ -37,6 +39,7 @@ export default function CampaignForm(): JSX.Element {
         }
       };
     });
+
     fetch('http://localhost:5000/players', {
       method: 'POST',
       body: JSON.stringify(formattedPlayerData),
@@ -51,8 +54,8 @@ export default function CampaignForm(): JSX.Element {
       title,
       players: Object.values(formattedPlayerData)
     });
-    
   };
+
   const onAddPlayer = () => {
     setNumberOfPlayers(numberOfPlayers+1);
   };

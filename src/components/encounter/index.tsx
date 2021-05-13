@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useRecoilValue } from 'recoil';
 import { campaignState } from '../../state/campaign';
 
 export default function Encounter(): JSX.Element {
   const campaign = useRecoilValue(campaignState);
-
   const onDragStop = (data: DraggableEvent, playerId: string) => {
     if (!(data instanceof MouseEvent)) {
       return;
@@ -24,6 +23,7 @@ export default function Encounter(): JSX.Element {
       }
     });
   };
+  console.log(campaign.players);
   return (
     <>
       {campaign.players.map((player) => {
