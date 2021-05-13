@@ -3,10 +3,20 @@ import { useForm } from 'react-hook-form';
 import { useRecoilState } from 'recoil';
 import { campaignState } from '../../state/campaign';
 import Input from '../input';
+import { v4 as uuidv4 } from 'uuid';
+
+interface IPlayer {
+  id: string;
+  name: string;
+  pos: {
+    x: number;
+    y: number;
+  }
+}
 
 interface IFormInput {
   title: string;
-  players: string[];
+  players: IPlayer[];
 }
 
 export default function CampaignForm(): JSX.Element {
@@ -16,23 +26,30 @@ export default function CampaignForm(): JSX.Element {
   const onSubmit = (data: IFormInput) => {
     const { title, ...players } = data;
     const playerData = Object.values(players);
-    fetch('/players', {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
+    let formattedPlayerData = {};
+    playerData.forEach(name => {
+      const id = uuidv4();
+      formattedPlayerData = {
+        [id]: {
+          id,
+          name,
+          pos: { x: 0, y: 0 }
+        }
+      };
+    });
+    fetch('http://localhost:5000/players', {
+      method: 'POST',
+      body: JSON.stringify(formattedPlayerData),
       headers: {
+        mode: 'cors',
+        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(playerData)
+      }
+    });
 
-     });
     setCampaign({
       title,
-      players: playerData
+      players: Object.values(formattedPlayerData)
     });
     
   };
