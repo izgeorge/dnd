@@ -26,7 +26,10 @@ app.use(express.json())
 app.use(cors())
 
 // default players list
-db.defaults({ players: {} }).write();
+db.defaults({ campaign: {
+  title: '',
+  players: {}
+} }).write();
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
@@ -36,36 +39,36 @@ app.get('/', function (request, response) {
   response.sendFile(__dirname + '/index.js');
 });
 
-app.get('/players', function (request, response) {
-  const dbUsers=[];
-  const players = db.get('players').value(); // Find all players in the collection
-  Object.values(players).forEach(function(player) {
-    dbUsers.push({ name: player.name, pos: player.pos }); // adds their info to the dbUsers value
-  });
-  response.send(dbUsers); // sends dbUsers back to the page
+app.get('/campaign', function (request, response) {
+  // const dbUsers=[];
+  const campaign = db.get('campaign').value();
+  // Object.values(campaign.players).forEach(function(player) {
+  //   dbUsers.push({ name: player.name, pos: player.pos }); // adds their info to the dbUsers value
+  // });
+  const formattedCampaign = {
+    ...campaign,
+    players: Object.values(campaign.players)
+  }
+  response.send(formattedCampaign);
 });
 
-// creates a new entry in the players collection with the submitted values
-app.post('/players', function (request, response) {
-  db.get('players')
+// creates a new campaign
+app.post('/campaign', function (request, response) {
+  db.get('campaign')
     .assign(request.body)
     .write();
-  console.log('New user inserted in the database');
+  console.log('New campaign inserted in the database');
   response.sendStatus(200);
 });
 
 // updates player position
-app.put('/players/:uid', function (request, response) {
-  console.log(db.get('players').filter({ id: request.params.uid }))
-  
-  const selectedPlayer = db.get('players').find({ id: request.params.uid }).assign({ pos: request.body }).write();
-  console.log('!!!', selectedPlayer)
+// app.put('/campaign/:uid', function (request, response) {
+//   db.get('players').find({ id: request.params.uid }).assign({ pos: request.body }).write();
 
-  io.emit('update map', db.get('players'));
-  console.log('User updated');
-  console.log(request.body)
-  response.sendStatus(200);
-});
+//   response.sendStatus(200);
+
+//   io.emit('update map', db.get('players'));
+// });
 // removes entries from players and populates it with default players
 // app.get('/reset', function (request, response) {
 //   // removes all entries from the collection
@@ -96,6 +99,13 @@ app.put('/players/:uid', function (request, response) {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+
+  socket.on('update player', (data) => {
+    const selectedPlayer = db.get('campaign.players').find({ id: data.id });
+    
+    selectedPlayer.assign({ pos: data.pos }).write();
+    io.emit('update player', selectedPlayer);
+  })
 });
 
 // listen for requests :)
