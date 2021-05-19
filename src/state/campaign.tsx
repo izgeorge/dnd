@@ -1,14 +1,9 @@
 import { atom, atomFamily, selector, selectorFamily } from 'recoil';
 import { Socket } from 'socket.io-client';
-import { IPlayer } from '../components/character';
 
-export const socketState = atom<{
-  socket: Socket | null
-}>({
+export const socketState = atom<Socket | null>({
   key: 'socketState',
-  default: {
-    socket: null,
-  },
+  default: null,
   dangerouslyAllowMutability: true,
 });
 
@@ -25,19 +20,8 @@ export const campaignState = atom<{
 
 export const playersFamily = atomFamily({
   key: 'playersFamily',
-  default: selectorFamily({
-    key: 'playersFamilyDefault',
-    get: () => () => ({}),
-    set: id => ({ set }, newValue) => {
-      set(playersFamily(id), newValue);
-    }
-  }),
+  default: {},
 });
-
-// export const playersFamily = atomFamily({
-//   key: 'playersFamily',
-//   default: {},
-// });
 
 export const playersState = selector<string[]>({
   key: 'playerState',

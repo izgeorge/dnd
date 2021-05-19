@@ -8,18 +8,16 @@ import Character, { IPlayer } from './components/character';
 
 function App(): JSX.Element {
   const [campaign, setCampaign] = useRecoilState(campaignState);
-  const [socketObj, setSocket] = useRecoilState(socketState);
+  const [socket, setSocket] = useRecoilState(socketState);
   const setPlayer = useRecoilCallback(({ set }) => (playerId: string, newValue: IPlayer) => {
     set(playersFamily(playerId), newValue);
   }, []);
 
   useEffect(() => {
-    if (!socketObj.socket) {
-      setSocket({
-        socket: io('http://localhost:5000/')
-      });
+    if (!socket) {
+      setSocket(io('http://localhost:5000/'));
     }
-  }, [socketObj.socket]);
+  }, [socket]);
 
   useEffect(() => {
     const fetchCampaign = async () => {
