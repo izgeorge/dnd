@@ -1,18 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './app';
+import App from './App';
 import {
   RecoilRoot,
 } from 'recoil';
 import reportWebVitals from './reportWebVitals';
+import SocketWrapper from './components/socket-wrapper';
 
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-      <div className="bg-red">
+      <SocketWrapper>
         <App />
-      </div>
+      </SocketWrapper>
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
