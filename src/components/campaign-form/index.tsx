@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { campaignState } from '../../state/campaign';
+import { useRecoilCallback, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { campaignState, playersFamily } from '../../state/campaign';
 import Input from '../input';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -24,6 +24,9 @@ export default function CampaignForm(): JSX.Element {
   const setCampaign = useSetRecoilState(campaignState);
   const { register, handleSubmit } = useForm<IFormInput>();
   const [numberOfPlayers, setNumberOfPlayers] = useState(1);
+  const onUpdatePlayer = useRecoilCallback(({ set }) => (playerId: string, data: IPlayer) => {
+    set(playersFamily(playerId), data);
+  });
   const onSubmit = (data: IFormInput) => {
     const { title, ...players } = data;
     const playerData = Object.values(players);
@@ -31,6 +34,11 @@ export default function CampaignForm(): JSX.Element {
 
     playerData.forEach(name => {
       const id = uuidv4();
+      const playerObj = {
+        id,
+        name,
+        pos: { x: 0, y: 0 }
+      };
       formattedPlayerData = {
         ...formattedPlayerData,
         [id]: {
@@ -39,6 +47,7 @@ export default function CampaignForm(): JSX.Element {
           pos: { x: 0, y: 0 }
         }
       };
+      onUpdatePlayer(playerObj.id, playerObj);
     });
 
     fetch('http://localhost:5000/campaign', {

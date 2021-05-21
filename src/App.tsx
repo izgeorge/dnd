@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import CampaignForm from './components/campaign-form';
-import io from 'socket.io-client';
 import { useRecoilCallback, useRecoilState } from 'recoil';
-import { campaignState, playersFamily, socketState } from './state/campaign';
+import { campaignState, playersFamily } from './state/campaign';
 import Character, { IPlayer } from './components/character';
 
-function App(): JSX.Element {
+function App(): JSX.Element | null {
   const [campaign, setCampaign] = useRecoilState(campaignState);
   const setPlayer = useRecoilCallback(({ set }) => (playerId: string, newValue: IPlayer) => {
     set(playersFamily(playerId), newValue);
@@ -33,7 +32,7 @@ function App(): JSX.Element {
   return (
     <div className="h-screen">
       {!campaign.title && <CampaignForm />}
-      {campaign.playerIds.map(playerId => <Character key={playerId} playerId={playerId} />)}
+      {!!campaign.playerIds.length && campaign.playerIds.map(playerId => <Character key={playerId} playerId={playerId} />)}
     </div>
   );
 }

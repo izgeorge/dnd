@@ -1,6 +1,6 @@
 import React from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
-import { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { playersFamily, socketState } from '../../state/campaign';
 
 export interface IPlayer {
@@ -12,14 +12,20 @@ export interface IPlayer {
   }
 }
 
-export default function Character({ playerId }: { playerId: string }): JSX.Element {
+export default function Character({ playerId }: { playerId: string }): JSX.Element | null {
   const player = useRecoilValue(playersFamily(playerId)) as IPlayer;
+  console.log(player);
+  if (!player) {
+    return null;
+  }
+
   const onUpdatePlayer = useRecoilCallback(({ set }) => (data: IPlayer) => {
     if (data.id !== playerId) {
       return;
     }
     set(playersFamily(playerId), data);
   });
+
   const socket = useRecoilValue(socketState);
   const onDragStop = (data: DraggableEvent, playerId: string) => {
     if (!(data instanceof MouseEvent) || !socket) {
