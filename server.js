@@ -40,11 +40,7 @@ app.get('/', function (request, response) {
 });
 
 app.get('/campaign', function (request, response) {
-  // const dbUsers=[];
   const campaign = db.get('campaign').value();
-  // Object.values(campaign.players).forEach(function(player) {
-  //   dbUsers.push({ name: player.name, pos: player.pos }); // adds their info to the dbUsers value
-  // });
   const formattedCampaign = {
     ...campaign,
     players: Object.values(campaign.players)
@@ -60,42 +56,6 @@ app.post('/campaign', function (request, response) {
   console.log('New campaign inserted in the database');
   response.sendStatus(200);
 });
-
-// updates player position
-// app.put('/campaign/:uid', function (request, response) {
-//   db.get('players').find({ id: request.params.uid }).assign({ pos: request.body }).write();
-
-//   response.sendStatus(200);
-
-//   io.emit('update map', db.get('players'));
-// });
-// removes entries from players and populates it with default players
-// app.get('/reset', function (request, response) {
-//   // removes all entries from the collection
-//   db.get('players')
-//   .remove()
-//   .write();
-//   console.log('Database cleared');
-  
-//   // default players inserted in the database
-//   var players= [];
-  
-//   players.forEach(function(){
-//     db.get('players').write();
-//   });
-//   console.log('Default players added');
-//   response.redirect('/');
-// });
-
-// removes all entries from the collection
-// app.get('/clear', function (request, response) {
-//   // removes all entries from the collection
-//   db.get('players')
-//   .remove()
-//   .write();
-//   console.log('Database cleared');
-//   response.redirect('/');
-// });
 
 io.on('connection', (socket) => {
   console.log('a user connected');
